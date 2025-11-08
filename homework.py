@@ -33,7 +33,11 @@ def get_random_activity():
     
     if response.status_code == 200:
         data = response.json()
-        print(f"========= Your Activity =========\n{data['activity']}\n========= Type =========\n{data['type']}")
+        print("Random Activity Suggestion:")
+        print(f"Activity: {data['activity']}")
+        print(F"Type: {data['type']}")
+        print(f"Participants: {data['participants']}")
+        print("Ready to try it?")
     else:
         print("Failed to fetch posts.")
 
@@ -50,18 +54,31 @@ def get_activity_by_type():
     # 2. Get their choice
     # 3. Make API request with type parameter
     # 4. Display the result
-    activity_type = input("Select a type! (education, recreational, social, diy, charity, cooking, relaxation, music, busywork) ")
+    
+    
+    activity_type = input("Select a type! (education, recreational, social, diy, charity, cooking, relaxation, music, busywork): ")
+    
+    activities = ["education", "recreational", "social", "diy", "charity", "cooking", "relaxation", "music", "busywork"]
 
-    url = f"https://bored-api.appbrewery.com/filter?type={activity_type}"
+    if activity_type in activities:
+        url = f"https://bored-api.appbrewery.com/filter?type={activity_type}"
+        
+        response = requests.get(url)
 
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        data = response.json()
-        print(data[0]['activity'])
-        return data[0]['activity']
+        if response.status_code == 200:
+            data = response.json()
+            for i in range(len(data)):
+                print("Random Activity Suggestion:")
+                print(f"Activity: {data[i]['activity']}")
+                print(F"Type: {data[i]['type']}")
+                print(f"Participants: {data[i]['participants']}")
+                print("Ready to try it?")
+        else:
+            print("Failed to fetch data")
     else:
-        print("Failed")
+        print("Activity type must be in listed options.")
+
+    
 
 def get_activity_by_participants():
     """
@@ -73,7 +90,7 @@ def get_activity_by_participants():
     # 1. Ask user how many participants
     # 2. Make API request with participants parameter
     # 3. Display the activity suggestion
-    number = input("Choose the number of participants: ")
+    number = input("Choose the number of participants for your activity: ")
 
     url = f"https://bored-api.appbrewery.com/filter?participants={number}"
 
@@ -81,8 +98,12 @@ def get_activity_by_participants():
 
     if response.status_code == 200:
         data = response.json()
-        print(f"========= Activity Suggestions =========\n- {data[0]['activity']}")
-        return data[0]['activity']
+        print("Random Activity Suggestion:")
+        for i in range(len(data)):
+            print(f"Activity: {data[i]['activity']}")
+            print(F"Type: {data[i]['type']}")
+            print(f"Participants: {data[i]['participants']}")
+            print("Ready to try it?")
     else:
         print("Failed to fetch data.")
 
@@ -94,9 +115,7 @@ def show_menu():
     print("1. Get a random activity")
     print("2. Get activity by type")
     print("3. Get activity by participants")
-    print("4. Save my fa vorite activities")
-    print("5. View my saved activities")
-    print("6. Exit")
+    print("4. Exit")
 
 def main():
     """Main function with menu loop"""
@@ -106,7 +125,7 @@ def main():
         show_menu()
         
         try:
-            choice = input("\nChoose an option (1-7): ")
+            choice = input("\nChoose an option (1-4): ")
             
             if choice == '1':
                 get_random_activity()
@@ -115,16 +134,10 @@ def main():
             elif choice == '3':
                 get_activity_by_participants()
             elif choice == '4':
-                get_quick_activity()
-            elif choice == '5':
-                save_favorite_activity()
-            elif choice == '6':
-                view_saved_activities()
-            elif choice == '7':
                 print("Thanks for using Bored Activity Finder!")
                 break
             else:
-                print("Invalid choice! Please choose 1-7.")
+                print("Invalid choice! Please choose 1-4.")
                 
         except KeyboardInterrupt:
             print("\n\nGoodbye!")
